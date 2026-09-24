@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Oswald } from "next/font/google";
 import "./globals.css";
 import { FitLogProvider } from "@/context/FitLogContext";
+import { ToastProvider } from "@/context/ToastContext";
 import Navbar from "@/components/Navbar";
 
 const geistSans = Geist({
@@ -33,8 +34,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white">
         <FitLogProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
+          <ToastProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+          </ToastProvider>
         </FitLogProvider>
       </body>
     </html>

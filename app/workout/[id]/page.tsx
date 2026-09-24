@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getWorkoutById } from "@/lib/api";
+import WorkoutActions from "@/components/WorkoutActions";
 
 interface WorkoutPageProps {
   params: Promise<{ id: string }>;
@@ -207,52 +208,8 @@ export default async function WorkoutDetailPage({ params }: WorkoutPageProps) {
             </ol>
           </div>
 
-          {/* Action Buttons (Visually ready for Phase 09) */}
-          <div className="pt-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
-            {/* Primary Action Button */}
-            <button
-              type="button"
-              className="flex-1 inline-flex items-center justify-center gap-2.5 bg-[#ccff00] hover:bg-[#b8e600] active:scale-95 text-black font-extrabold text-sm uppercase tracking-wider px-6 py-4 rounded-xl transition-all duration-150 shadow-[0_0_20px_rgba(204,255,0,0.2)] focus:outline-none focus-visible:ring-4 focus-visible:ring-white"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2.5"
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              <span>Add to today&apos;s plan</span>
-            </button>
-
-            {/* Secondary Action Button */}
-            <button
-              type="button"
-              className="flex-1 inline-flex items-center justify-center gap-2.5 border border-neutral-700 hover:border-neutral-500 bg-neutral-900/80 hover:bg-neutral-800 active:scale-95 text-neutral-200 hover:text-white font-bold text-sm uppercase tracking-wider px-6 py-4 rounded-xl transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ccff00]"
-            >
-              <svg
-                className="w-5 h-5 text-neutral-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                />
-              </svg>
-              <span>Save for later</span>
-            </button>
-          </div>
+          {/* Action Buttons connected to FitLogContext and ToastContext */}
+          <WorkoutActions workout={workout} />
         </div>
       </div>
     </div>
