@@ -12,13 +12,15 @@ export default function MyPlanContent() {
   const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
   const [sortBy, setSortBy] = useState<SortOption>("duration");
 
-  // Dynamic live metric calculations from todayPlan
-  const totalExercises = todayPlan.length;
-  const totalMinutes = todayPlan.reduce(
+  // Dynamic live metric calculations based on active tab (Today's Plan vs Saved)
+  const currentList = activeTab === "plan" ? todayPlan : savedWorkouts;
+
+  const totalExercises = currentList.length;
+  const totalMinutes = currentList.reduce(
     (sum, workout) => sum + (workout.duration || 0),
     0
   );
-  const totalCalories = todayPlan.reduce(
+  const totalCalories = currentList.reduce(
     (sum, workout) => sum + (workout.caloriesBurned || 0),
     0
   );
@@ -102,10 +104,10 @@ export default function MyPlanContent() {
         </div>
       </div>
 
-      {/* 3. Tabs & Sort Row (Matching Figma layout) */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-2">
+      {/* 3. Tabs & Sort Row (Matching Figma video layout) */}
+      <div className="flex flex-row items-end justify-between gap-4 pt-2">
         {/* Left: Pill Tabs Container */}
-        <div className="bg-[#19191d] p-1 rounded-full border border-neutral-800/80 inline-flex items-center self-start">
+        <div className="bg-[#19191d] p-1 rounded-full border border-neutral-800/80 inline-flex items-center">
           <button
             type="button"
             onClick={() => setActiveTab("plan")}
@@ -135,11 +137,11 @@ export default function MyPlanContent() {
           </button>
         </div>
 
-        {/* Right: Sort Dropdown */}
-        <div className="flex items-center gap-2.5 self-end sm:self-auto">
+        {/* Right: Sort Dropdown with Label on Top (Matching video screenshot) */}
+        <div className="flex flex-col items-start gap-1">
           <label
             htmlFor="my-plan-sort"
-            className="text-xs font-semibold text-neutral-400 whitespace-nowrap"
+            className="text-xs font-semibold text-neutral-400"
           >
             Sort By
           </label>
@@ -147,7 +149,7 @@ export default function MyPlanContent() {
             id="my-plan-sort"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as SortOption)}
-            className="bg-[#19191d] border border-neutral-800 text-white text-xs font-bold rounded-xl px-3.5 py-2 focus:outline-none focus:border-[#ccff00] focus:ring-1 focus:ring-[#ccff00] cursor-pointer transition-colors"
+            className="bg-[#131316] border border-neutral-600 hover:border-neutral-400 text-white text-xs sm:text-sm font-semibold rounded-xl px-4 py-2 focus:outline-none focus:border-[#ccff00] focus:ring-1 focus:ring-[#ccff00] cursor-pointer transition-all min-w-[140px]"
           >
             <option value="duration">Duration</option>
             <option value="calories">Calories</option>
