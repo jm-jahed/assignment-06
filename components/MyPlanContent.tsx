@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useFitLog } from "@/context/FitLogContext";
 import PlanWorkoutCard from "@/components/PlanWorkoutCard";
 
+type SortOption = "duration" | "calories" | "rating";
+
 export default function MyPlanContent() {
   const { todayPlan, savedWorkouts, isLoaded } = useFitLog();
   const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
+  const [sortBy, setSortBy] = useState<SortOption>("duration");
 
   // Dynamic live metric calculations from todayPlan
   const totalExercises = todayPlan.length;
@@ -19,6 +22,26 @@ export default function MyPlanContent() {
     (sum, workout) => sum + (workout.caloriesBurned || 0),
     0
   );
+
+  // Sorted list for Today's Plan tab
+  const sortedTodayPlan = useMemo(() => {
+    return [...todayPlan].sort((a, b) => {
+      if (sortBy === "duration") return a.duration - b.duration;
+      if (sortBy === "calories") return b.caloriesBurned - a.caloriesBurned;
+      if (sortBy === "rating") return b.rating - a.rating;
+      return 0;
+    });
+  }, [todayPlan, sortBy]);
+
+  // Sorted list for Saved tab
+  const sortedSavedWorkouts = useMemo(() => {
+    return [...savedWorkouts].sort((a, b) => {
+      if (sortBy === "duration") return a.duration - b.duration;
+      if (sortBy === "calories") return b.caloriesBurned - a.caloriesBurned;
+      if (sortBy === "rating") return b.rating - a.rating;
+      return 0;
+    });
+  }, [savedWorkouts, sortBy]);
 
   // Loading state while restoring from localStorage
   if (!isLoaded) {
@@ -33,118 +56,110 @@ export default function MyPlanContent() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8 sm:space-y-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
       {/* 1. Page Header */}
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white font-[family-name:var(--font-oswald)]">
           MY PLAN
         </h1>
-        <p className="text-neutral-400 text-sm sm:text-base max-w-2xl leading-relaxed">
+        <p className="text-neutral-400 text-sm sm:text-base max-w-2xl">
           Cap of five lifts for today. Finish them, then load more.
         </p>
       </div>
 
-      {/* 2. Live Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-        {/* Exercises Metric */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-neutral-900/80 border border-neutral-800 flex flex-col justify-between space-y-2">
-          <span className="text-xs font-bold uppercase tracking-widest text-neutral-400">
-            Exercises
-          </span>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl font-black text-[#ccff00] font-mono">
+      {/* 2. Unified Live Metrics Card (Matching Figma design) */}
+      <div className="rounded-2xl border border-neutral-800/90 bg-[#131316] p-6 sm:p-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-12">
+          {/* Exercises */}
+          <div className="space-y-2">
+            <span className="block text-xs font-semibold text-neutral-400">
+              Exercises
+            </span>
+            <span className="block text-4xl sm:text-5xl font-black text-[#ccff00] font-mono">
               {totalExercises}
             </span>
-            <span className="text-xs font-medium text-neutral-500 uppercase tracking-wider">
-              / 5 Max
-            </span>
           </div>
-        </div>
 
-        {/* Minutes Metric */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-neutral-900/80 border border-neutral-800 flex flex-col justify-between space-y-2">
-          <span className="text-xs font-bold uppercase tracking-widest text-neutral-400">
-            Minutes
-          </span>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl font-black text-white font-mono">
+          {/* Minutes */}
+          <div className="space-y-2">
+            <span className="block text-xs font-semibold text-neutral-400">
+              Minutes
+            </span>
+            <span className="block text-4xl sm:text-5xl font-black text-white font-mono">
               {totalMinutes}
             </span>
-            <span className="text-xs font-medium text-neutral-500 uppercase tracking-wider">
-              Min Total
-            </span>
           </div>
-        </div>
 
-        {/* Calories Metric */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-neutral-900/80 border border-neutral-800 flex flex-col justify-between space-y-2">
-          <span className="text-xs font-bold uppercase tracking-widest text-neutral-400">
-            Calories
-          </span>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl font-black text-amber-400 font-mono">
-              {totalCalories}
+          {/* Calories */}
+          <div className="space-y-2">
+            <span className="block text-xs font-semibold text-neutral-400">
+              Calories
             </span>
-            <span className="text-xs font-medium text-neutral-500 uppercase tracking-wider">
-              Kcal Burn
+            <span className="block text-4xl sm:text-5xl font-black text-white font-mono">
+              {totalCalories}
             </span>
           </div>
         </div>
       </div>
 
-      {/* 3. Navigation Tabs */}
-      <div className="border-b border-neutral-800 flex items-center gap-4 sm:gap-8">
-        <button
-          type="button"
-          onClick={() => setActiveTab("plan")}
-          className={`pb-4 text-sm font-extrabold uppercase tracking-wider transition-all duration-200 border-b-2 flex items-center gap-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ccff00] rounded-t-sm ${
-            activeTab === "plan"
-              ? "border-[#ccff00] text-[#ccff00]"
-              : "border-transparent text-neutral-400 hover:text-white"
-          }`}
-          aria-selected={activeTab === "plan"}
-          role="tab"
-        >
-          <span>TODAY&apos;S PLAN</span>
-          <span
-            className={`px-2 py-0.5 rounded-full text-xs font-black ${
+      {/* 3. Tabs & Sort Row (Matching Figma layout) */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-2">
+        {/* Left: Pill Tabs Container */}
+        <div className="bg-[#19191d] p-1 rounded-full border border-neutral-800/80 inline-flex items-center self-start">
+          <button
+            type="button"
+            onClick={() => setActiveTab("plan")}
+            className={`px-5 py-2 rounded-full text-xs font-bold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ccff00] ${
               activeTab === "plan"
-                ? "bg-[#ccff00] text-black"
-                : "bg-neutral-800 text-neutral-400"
+                ? "bg-[#28282e] text-white shadow-sm"
+                : "text-neutral-400 hover:text-white"
             }`}
+            aria-selected={activeTab === "plan"}
+            role="tab"
           >
-            {todayPlan.length}
-          </span>
-        </button>
+            Today&apos;s Plan
+          </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveTab("saved")}
-          className={`pb-4 text-sm font-extrabold uppercase tracking-wider transition-all duration-200 border-b-2 flex items-center gap-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ccff00] rounded-t-sm ${
-            activeTab === "saved"
-              ? "border-[#ccff00] text-[#ccff00]"
-              : "border-transparent text-neutral-400 hover:text-white"
-          }`}
-          aria-selected={activeTab === "saved"}
-          role="tab"
-        >
-          <span>SAVED</span>
-          <span
-            className={`px-2 py-0.5 rounded-full text-xs font-black ${
+          <button
+            type="button"
+            onClick={() => setActiveTab("saved")}
+            className={`px-5 py-2 rounded-full text-xs font-bold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ccff00] ${
               activeTab === "saved"
-                ? "bg-[#ccff00] text-black"
-                : "bg-neutral-800 text-neutral-400"
+                ? "bg-[#28282e] text-white shadow-sm"
+                : "text-neutral-400 hover:text-white"
             }`}
+            aria-selected={activeTab === "saved"}
+            role="tab"
           >
-            {savedWorkouts.length}
-          </span>
-        </button>
+            Saved
+          </button>
+        </div>
+
+        {/* Right: Sort Dropdown */}
+        <div className="flex items-center gap-2.5 self-end sm:self-auto">
+          <label
+            htmlFor="my-plan-sort"
+            className="text-xs font-semibold text-neutral-400 whitespace-nowrap"
+          >
+            Sort By
+          </label>
+          <select
+            id="my-plan-sort"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortOption)}
+            className="bg-[#19191d] border border-neutral-800 text-white text-xs font-bold rounded-xl px-3.5 py-2 focus:outline-none focus:border-[#ccff00] focus:ring-1 focus:ring-[#ccff00] cursor-pointer transition-colors"
+          >
+            <option value="duration">Duration</option>
+            <option value="calories">Calories</option>
+            <option value="rating">Rating</option>
+          </select>
+        </div>
       </div>
 
       {/* 4. Tab Content Area */}
-      <div>
+      <div className="pt-2">
         {activeTab === "plan" ? (
-          todayPlan.length === 0 ? (
+          sortedTodayPlan.length === 0 ? (
             /* Empty Today's Plan State */
             <div className="py-16 px-4 rounded-3xl border border-dashed border-neutral-800 bg-neutral-950/50 flex flex-col items-center text-center space-y-4">
               <div className="w-16 h-16 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-500">
@@ -175,7 +190,7 @@ export default function MyPlanContent() {
 
               <Link
                 href="/#library"
-                className="inline-flex items-center gap-2 bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white shadow-[0_0_20px_rgba(204,255,0,0.2)]"
+                className="inline-flex items-center gap-2 bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white shadow-[0_0_20px_rgba(204,255,0,0.2)]"
               >
                 <span>Go to workouts</span>
                 <svg
@@ -195,14 +210,14 @@ export default function MyPlanContent() {
               </Link>
             </div>
           ) : (
-            /* Today's Plan Cards Grid */
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {todayPlan.map((workout) => (
+            /* Today's Plan Horizontal Rows List */
+            <div className="space-y-4">
+              {sortedTodayPlan.map((workout) => (
                 <PlanWorkoutCard key={workout.id} workout={workout} />
               ))}
             </div>
           )
-        ) : savedWorkouts.length === 0 ? (
+        ) : sortedSavedWorkouts.length === 0 ? (
           /* Empty Saved Workouts State */
           <div className="py-16 px-4 rounded-3xl border border-dashed border-neutral-800 bg-neutral-950/50 flex flex-col items-center text-center space-y-4">
             <div className="w-16 h-16 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-500">
@@ -233,7 +248,7 @@ export default function MyPlanContent() {
 
             <Link
               href="/#library"
-              className="inline-flex items-center gap-2 border border-neutral-700 hover:border-neutral-500 bg-neutral-900 hover:bg-neutral-800 text-white font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ccff00]"
+              className="inline-flex items-center gap-2 border border-neutral-700 hover:border-neutral-500 bg-neutral-900 hover:bg-neutral-800 text-white font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ccff00]"
             >
               <span>Go to workouts</span>
               <svg
@@ -253,9 +268,9 @@ export default function MyPlanContent() {
             </Link>
           </div>
         ) : (
-          /* Saved Cards Grid */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {savedWorkouts.map((workout) => (
+          /* Saved Horizontal Rows List */
+          <div className="space-y-4">
+            {sortedSavedWorkouts.map((workout) => (
               <PlanWorkoutCard
                 key={workout.id}
                 workout={workout}
