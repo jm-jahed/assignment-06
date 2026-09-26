@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useFitLog } from "@/context/FitLogContext";
 import PlanWorkoutCard from "@/components/PlanWorkoutCard";
 
@@ -9,8 +10,21 @@ type SortOption = "duration" | "calories" | "rating";
 
 export default function MyPlanContent() {
   const { todayPlan, savedWorkouts, isLoaded } = useFitLog();
-  const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+
+  const [activeTab, setActiveTab] = useState<"plan" | "saved">(
+    tabParam === "saved" ? "saved" : "plan"
+  );
   const [sortBy, setSortBy] = useState<SortOption>("duration");
+
+  useEffect(() => {
+    if (tabParam === "saved") {
+      setActiveTab("saved");
+    } else if (tabParam === "plan") {
+      setActiveTab("plan");
+    }
+  }, [tabParam]);
 
   // Dynamic live metric calculations based on active tab (Today's Plan vs Saved)
   const currentList = activeTab === "plan" ? todayPlan : savedWorkouts;

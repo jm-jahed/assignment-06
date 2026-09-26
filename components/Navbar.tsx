@@ -86,7 +86,7 @@ export default function Navbar() {
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Plan Badge - Filled Accent Pill */}
           <Link
-            href="/my-plan"
+            href="/my-plan?tab=plan"
             className="flex items-center gap-1.5 bg-[#ccff00] hover:bg-[#b8e600] active:scale-95 text-black font-extrabold text-xs px-3 py-1.5 rounded-full transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             aria-label={`Today's Plan: ${planCount} items`}
           >
@@ -98,7 +98,7 @@ export default function Navbar() {
 
           {/* Saved Badge - Outlined Pill */}
           <Link
-            href="/my-plan"
+            href="/my-plan?tab=saved"
             className="flex items-center gap-1.5 border border-neutral-700 hover:border-neutral-500 bg-neutral-900/70 hover:bg-neutral-800 active:scale-95 text-neutral-200 hover:text-white font-semibold text-xs px-3 py-1.5 rounded-full transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ccff00]"
             aria-label={`Saved workouts: ${savedCount} items`}
           >
