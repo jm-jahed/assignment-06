@@ -4,6 +4,7 @@ import "./globals.css";
 import { FitLogProvider } from "@/context/FitLogContext";
 import { ToastProvider } from "@/context/ToastContext";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <ToastProvider>
             <Navbar />
             <main className="flex-1">{children}</main>
+            <Footer />
           </ToastProvider>
         </FitLogProvider>
       </body>
