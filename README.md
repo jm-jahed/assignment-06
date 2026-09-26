@@ -1,5 +1,9 @@
 # FitLog — Train With Intent. Log Every Set.
 
+## Project Links
+* **Live Application**: [https://assignment-06-weld.vercel.app/](https://assignment-06-weld.vercel.app/)
+* **GitHub Repository**: [https://github.com/jm-jahed/assignment-06](https://github.com/jm-jahed/assignment-06)
+
 ## Project Description
 FitLog is a dark, no-nonsense gym companion web application that enables users to browse workout routines, inspect step-by-step performance instructions, build a daily workout plan with automated time and calorie tracking, save favorite exercises for later, and track completion progress.
 
