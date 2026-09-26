@@ -20,7 +20,7 @@ export default function WorkoutActions({ workout }: WorkoutActionsProps) {
   // 1. Add to Today's Plan handler
   const handleAddToPlan = () => {
     if (alreadyInPlan) {
-      showToast("Already in today's plan.", "info");
+      showToast("Already in your plan", "info");
       return;
     }
 
@@ -36,7 +36,7 @@ export default function WorkoutActions({ workout }: WorkoutActionsProps) {
     } else if (result.reason === "limit") {
       showToast("Today's plan is full. Maximum 5 workouts.", "warning");
     } else if (result.reason === "duplicate") {
-      showToast("Already in today's plan.", "info");
+      showToast("Already in your plan", "info");
     }
   };
 

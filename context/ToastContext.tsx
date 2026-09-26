@@ -39,17 +39,17 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       <div
         aria-live="polite"
         aria-atomic="true"
-        className="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0"
+        className="fixed top-20 right-4 sm:right-6 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0"
       >
         {toasts.map((toast) => (
           <div
             key={toast.id}
             role="status"
-            className={`pointer-events-auto flex items-center justify-between gap-3 p-4 rounded-xl border backdrop-blur-md shadow-2xl transition-all duration-300 animate-in slide-in-from-bottom-5 fade-in ${
+            className={`pointer-events-auto flex items-center justify-between gap-3 px-4 py-3 rounded-xl border backdrop-blur-md shadow-2xl transition-all duration-300 animate-in slide-in-from-top-5 fade-in ${
               toast.type === "success"
                 ? "bg-neutral-900/95 border-[#ccff00]/60 text-white"
-                : toast.type === "warning" || toast.type === "error"
-                ? "bg-neutral-900/95 border-amber-500/60 text-white"
+                : toast.type === "warning" || toast.type === "error" || toast.type === "info"
+                ? "bg-neutral-900/95 border-red-500/60 text-white"
                 : "bg-neutral-900/95 border-neutral-700 text-white"
             }`}
           >
@@ -71,10 +71,10 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                   </svg>
                 </div>
               )}
-              {toast.type === "warning" && (
-                <div className="w-5 h-5 rounded-full bg-amber-400 text-black flex items-center justify-center flex-shrink-0">
+              {(toast.type === "warning" || toast.type === "error" || toast.type === "info") && (
+                <div className="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center flex-shrink-0">
                   <svg
-                    className="w-3.5 h-3.5"
+                    className="w-3 h-3"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -83,24 +83,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="3"
-                      d="M12 9v2m0 4h.01"
-                    />
-                  </svg>
-                </div>
-              )}
-              {toast.type === "info" && (
-                <div className="w-5 h-5 rounded-full bg-neutral-700 text-[#ccff00] flex items-center justify-center flex-shrink-0">
-                  <svg
-                    className="w-3.5 h-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="3"
-                      d="M13 16h-1v-4h-1m1-4h.01"
+                      d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
                 </div>
