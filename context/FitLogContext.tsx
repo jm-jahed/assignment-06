@@ -26,6 +26,7 @@ interface FitLogContextType {
   doneIds: number[];
   planCount: number;
   savedCount: number;
+  isLoaded: boolean;
   addToPlan: (workout: Workout) => AddToPlanResult;
   removeFromPlan: (workoutId: number) => void;
   isInPlan: (workoutId: number) => boolean;
@@ -177,6 +178,7 @@ export function FitLogProvider({ children }: { children: React.ReactNode }) {
         doneIds,
         planCount: todayPlan.length,
         savedCount: savedWorkouts.length,
+        isLoaded,
         addToPlan,
         removeFromPlan,
         isInPlan,
